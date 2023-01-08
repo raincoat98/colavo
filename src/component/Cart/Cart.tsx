@@ -14,7 +14,12 @@ const Cart = () => {
       <CartList />
       <CartTotalPrice />
       <VStack p={5}>
-        <Button colorScheme="purple" width="100%">
+        <Button
+          bg={"purple.400"}
+          _hover={{ bg: "purple.500" }}
+          color="white"
+          width="100%"
+        >
           다음
         </Button>
       </VStack>
