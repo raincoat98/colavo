@@ -1,19 +1,22 @@
 import { Text, Button, Flex, Spacer } from "@chakra-ui/react";
 import { SmallAddIcon } from "@chakra-ui/icons";
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../store";
 
 import ItemModal from "./ItemModal";
+import { addItems } from "../../store/cartSlice";
 
 const CartButtons = () => {
+  const dispatch = useDispatch();
+
   const { items = {} } = useSelector((state: RootState) => state.colavolab);
 
   const [showItemModal, setShowItemModal] = useState(false);
   const openItemModal = () => setShowItemModal(true);
 
   const handleSubmit = (selectedItems: any) => {
-    console.log(selectedItems);
+    dispatch(addItems(selectedItems));
   };
 
   return (

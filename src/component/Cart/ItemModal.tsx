@@ -18,7 +18,7 @@ import {
 } from "@chakra-ui/react";
 import { contentBackground, fontColor, subFontColor } from "../../util/colors";
 import { ColavolabItem } from "../../store/colavolabSlice";
-
+import { Item } from "../../store/cartSlice";
 interface ItemModalProps {
   items: ColavolabItem;
   showItemModal: boolean;
@@ -41,11 +41,11 @@ function ItemModal(props: ItemModalProps) {
     if (!showItemModal) setSelectedItems([]);
   }, [showItemModal]);
 
-  const [selectedItems, setSelectedItems] = useState<ColavolabItem[]>([]);
-
-  const isChecked = (item: ColavolabItem) => {
-    if (selectedItems.includes(item)) {
-      setSelectedItems(selectedItems.filter((i: ColavolabItem) => i !== item));
+  const [selectedItems, setSelectedItems] = useState<Item[]>([]);
+  const isChecked = (item: Item) => {
+    const itemIds = selectedItems.map((i: Item) => i.id);
+    if (itemIds.includes(item.id)) {
+      setSelectedItems(selectedItems.filter((i: Item) => i.id !== item.id));
     } else {
       setSelectedItems([...selectedItems, item]);
     }
@@ -80,40 +80,64 @@ function ItemModal(props: ItemModalProps) {
           <ModalCloseButton />
           <ModalBody overflowY="scroll" paddingTop="50px" paddingBottom="104px">
             {items &&
-              Object.entries(items).map(([key, item]) => (
-                <Flex
-                  key={key}
-                  bgColor={bgColor}
-                  bg={selectedItems.includes(item) ? "purple.200" : bgColor}
-                  color={selectedItems.includes(item) ? "gray.700" : font}
-                  onClick={() => isChecked(item)}
-                  alignItems="center"
-                  cursor="pointer"
-                  p={5}
-                >
-                  <Box>
-                    <Text fontWeight="semibold">{item.name}</Text>
-                    <Text
-                      fontSize="sm"
-                      color={
-                        selectedItems.includes(item) ? "gray.700" : subFont
-                      }
-                    >
-                      {item.price && item.price + "원"}
-                    </Text>
-                  </Box>
-                  <Spacer />
-                  <Box>
-                    <CheckIcon
-                      color="purple.800"
-                      boxSize="6"
-                      visibility={
-                        selectedItems.includes(item) ? "visible" : "hidden"
-                      }
-                    />
-                  </Box>
-                </Flex>
-              ))}
+              Object.entries(items).map(([key, item]) => {
+                const updatedItem: Item = { ...item, id: key };
+
+                return (
+                  <Flex
+                    key={key}
+                    bgColor={bgColor}
+                    bg={
+                      selectedItems
+                        .map((i: Item) => i.id)
+                        .includes(updatedItem.id)
+                        ? "purple.200"
+                        : bgColor
+                    }
+                    color={
+                      selectedItems
+                        .map((i: Item) => i.id)
+                        .includes(updatedItem.id)
+                        ? "gray.700"
+                        : font
+                    }
+                    onClick={() => isChecked(updatedItem)}
+                    alignItems="center"
+                    cursor="pointer"
+                    p={5}
+                  >
+                    <Box>
+                      <Text fontWeight="semibold">{item.name}</Text>
+                      <Text
+                        fontSize="sm"
+                        color={
+                          selectedItems
+                            .map((i: Item) => i.id)
+                            .includes(updatedItem.id)
+                            ? "gray.700"
+                            : subFont
+                        }
+                      >
+                        {updatedItem.price && updatedItem.price + "원"}
+                      </Text>
+                    </Box>
+                    <Spacer />
+                    <Box>
+                      <CheckIcon
+                        color="purple.800"
+                        boxSize="6"
+                        visibility={
+                          selectedItems
+                            .map((i: Item) => i.id)
+                            .includes(updatedItem.id)
+                            ? "visible"
+                            : "hidden"
+                        }
+                      />
+                    </Box>
+                  </Flex>
+                );
+              })}
           </ModalBody>
           <ModalFooter
             position="absolute"
