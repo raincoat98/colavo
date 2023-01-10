@@ -1,4 +1,4 @@
-import { Item, Discount } from "./../store/cartSlice";
+import { Item, Discount } from "../store/cartSlice";
 import axios from "axios";
 
 const API_URL =
