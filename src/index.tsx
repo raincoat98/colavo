@@ -6,18 +6,11 @@ import reportWebVitals from "./reportWebVitals";
 import * as serviceWorker from "./serviceWorker";
 
 import { Provider } from "react-redux";
-import { configureStore } from "@reduxjs/toolkit";
-import itemReducer from "./store/itemSlice";
+import { store } from "./store";
 
 const container = document.getElementById("root");
 if (!container) throw new Error("Failed to find the root element");
 const root = ReactDOM.createRoot(container);
-
-export const store = configureStore({
-  reducer: {
-    item: itemReducer,
-  },
-});
 
 root.render(
   <React.StrictMode>
