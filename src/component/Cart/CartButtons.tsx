@@ -1,7 +1,21 @@
 import { Text, Button, Flex, Spacer } from "@chakra-ui/react";
 import { SmallAddIcon } from "@chakra-ui/icons";
+import { useState } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
+
+import ItemModal from "./ItemModal";
 
 const CartButtons = () => {
+  const { items = {} } = useSelector((state: RootState) => state.colavolab);
+
+  const [showItemModal, setShowItemModal] = useState(false);
+  const openItemModal = () => setShowItemModal(true);
+
+  const handleSubmit = (selectedItems: any) => {
+    console.log(selectedItems);
+  };
+
   return (
     <Flex gap={1} p={5}>
       <Button
@@ -9,6 +23,7 @@ const CartButtons = () => {
         _hover={{ bg: "gray.100" }}
         color="gray.500"
         width="100%"
+        onClick={openItemModal}
       >
         <SmallAddIcon />
         <Text>시술</Text>
@@ -23,6 +38,13 @@ const CartButtons = () => {
         <SmallAddIcon />
         <Text>할인</Text>
       </Button>
+
+      <ItemModal
+        items={items}
+        showItemModal={showItemModal}
+        setShowItemModal={setShowItemModal}
+        onSubmit={handleSubmit}
+      ></ItemModal>
     </Flex>
   );
 };

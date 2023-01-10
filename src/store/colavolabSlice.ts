@@ -1,6 +1,9 @@
 import { Colavolab } from "../api/colavo";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Item, Discount } from "./cartSlice";
+export interface ColavolabItem {
+  [key: string]: any;
+}
 
 interface ColavolabState {
   items: { [key: string]: Item };
