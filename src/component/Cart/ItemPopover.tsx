@@ -17,7 +17,14 @@ import {
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { contentBackground } from "../../util/colors";
 
-const ItemPopover = ({ title, count, children, onSubmit, onRemove }: any) => {
+const ItemPopover = ({
+  title,
+  data,
+  count,
+  children,
+  onSubmit,
+  onRemove,
+}: any) => {
   const bgColor = useColorModeValue(
     contentBackground.light,
     contentBackground.dark
@@ -51,7 +58,7 @@ const ItemPopover = ({ title, count, children, onSubmit, onRemove }: any) => {
                 _hover={{ bg: "pink.100" }}
                 color="pink.400"
                 width="100%"
-                onClick={() => onRemove(count)}
+                onClick={() => onRemove(data)}
               >
                 삭제
               </Button>
@@ -62,7 +69,7 @@ const ItemPopover = ({ title, count, children, onSubmit, onRemove }: any) => {
                 _hover={{ bg: "gray.100" }}
                 color="gray.400"
                 width="100%"
-                onClick={() => onSubmit(count)}
+                onClick={() => onSubmit(data)}
               >
                 완료
               </Button>
