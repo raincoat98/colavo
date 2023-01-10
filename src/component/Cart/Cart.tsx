@@ -1,11 +1,27 @@
-import * as React from "react";
+import { useEffect } from "react";
 import { VStack, Button, Container, Divider } from "@chakra-ui/react";
 import CartTotalPrice from "./CartTotalPrice";
 import CartList from "./CartList";
 import CartUserInfo from "./CartUerInfo";
 import CartButtons from "./CartButtons";
+import { useDispatch } from "react-redux";
+import { fetchColavolab } from "../../api/colavo";
+import { fetchColavolabData } from "../../store/colavolabSlice";
 
 const Cart = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const data = await fetchColavolab();
+        dispatch(fetchColavolabData(data));
+      } catch (error) {
+        console.error(error);
+      }
+    })();
+  }, []);
+
   return (
     <Container>
       <CartUserInfo />

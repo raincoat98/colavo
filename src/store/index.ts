@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import cartReducer from "./cartSlice";
+import colavolabReducer from "./colavolabSlice";
 
 export const store = configureStore({
   reducer: {
     cart: cartReducer,
+    colavolab: colavolabReducer,
   },
 });
 
