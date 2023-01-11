@@ -5,6 +5,10 @@ export interface ColavolabItem {
   [key: string]: any;
 }
 
+export interface ColavolabDiscount {
+  [key: string]: any;
+}
+
 interface ColavolabState {
   items: { [key: string]: Item };
   discounts: { [key: string]: Discount };

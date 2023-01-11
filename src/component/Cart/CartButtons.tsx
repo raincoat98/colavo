@@ -3,20 +3,30 @@ import { SmallAddIcon } from "@chakra-ui/icons";
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../store";
+import { addItems, addDiscount } from "../../store/cartSlice";
 
 import ItemModal from "./ItemModal";
-import { addItems } from "../../store/cartSlice";
+import DiscountModal from "./DiscountModal";
 
 const CartButtons = () => {
   const dispatch = useDispatch();
 
-  const { items = {} } = useSelector((state: RootState) => state.colavolab);
+  const { items = {}, discounts = {} } = useSelector(
+    (state: RootState) => state.colavolab
+  );
 
   const [showItemModal, setShowItemModal] = useState(false);
   const openItemModal = () => setShowItemModal(true);
 
+  const [showDiscountModal, setShowDiscountModal] = useState(false);
+  const openDiscountModal = () => setShowDiscountModal(true);
+
   const handleSubmit = (selectedItems: any) => {
     dispatch(addItems(selectedItems));
+  };
+
+  const handleDiscountSubmit = (selectedDiscounts: any) => {
+    dispatch(addDiscount(selectedDiscounts));
   };
 
   return (
@@ -37,6 +47,7 @@ const CartButtons = () => {
         _hover={{ bg: "pink.100" }}
         color="pink.400"
         width="100%"
+        onClick={openDiscountModal}
       >
         <SmallAddIcon />
         <Text>할인</Text>
@@ -48,6 +59,13 @@ const CartButtons = () => {
         setShowItemModal={setShowItemModal}
         onSubmit={handleSubmit}
       ></ItemModal>
+
+      <DiscountModal
+        discounts={discounts}
+        showDiscountModal={showDiscountModal}
+        setShowDiscountModal={setShowDiscountModal}
+        onSubmit={handleDiscountSubmit}
+      />
     </Flex>
   );
 };

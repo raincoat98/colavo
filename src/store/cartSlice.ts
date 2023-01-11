@@ -9,7 +9,7 @@ export interface Item {
 }
 
 export interface Discount {
-  id: number;
+  id: string;
   name: string;
   rate: number;
   items?: Item[];
@@ -51,8 +51,18 @@ const cartSlice = createSlice({
 
       return { ...state, items: updatedItems };
     },
+    addDiscount(state, action: PayloadAction<Discount[]>) {
+      let discounts = action.payload;
+
+      console.log(discounts);
+      if (discounts !== undefined) {
+        discounts.forEach(discount => (discount.items = state.items));
+        return { ...state, discounts };
+      } else return state;
+    },
   },
 });
 
-export const { addItems, removeItems, updateItemCount } = cartSlice.actions;
+export const { addItems, removeItems, updateItemCount, addDiscount } =
+  cartSlice.actions;
 export default cartSlice.reducer;
