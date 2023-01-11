@@ -71,6 +71,9 @@ const cartSlice = createSlice({
       }
       return state;
     },
+    removeDiscount(state, action: PayloadAction<Discount>) {
+      state.discounts = state.discounts.filter(d => d.id !== action.payload.id);
+    },
   },
 });
 
@@ -80,5 +83,6 @@ export const {
   updateItemCount,
   addDiscount,
   updateDiscount,
+  removeDiscount,
 } = cartSlice.actions;
 export default cartSlice.reducer;

@@ -10,7 +10,12 @@ import {
 import { CheckIcon } from "@chakra-ui/icons";
 import ItemPopover from "./ItemPopover";
 import { contentBackground, fontColor } from "../../util/colors";
-import { Discount, Item, updateDiscount } from "../../store/cartSlice";
+import {
+  Discount,
+  Item,
+  removeDiscount,
+  updateDiscount,
+} from "../../store/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 
@@ -57,6 +62,10 @@ const CartDiscount = ({ data }: any) => {
     }
   };
 
+  function onRemoveDiscountHandler(discount: Discount) {
+    dispatch(removeDiscount(discount));
+  }
+
   function onSubmitDiscountHandler(discount: Discount) {
     dispatch(updateDiscount({ discount, item: selectedItems }));
   }
@@ -81,6 +90,7 @@ const CartDiscount = ({ data }: any) => {
         title={data.name}
         data={data}
         count={data.count}
+        onRemove={onRemoveDiscountHandler}
         onSubmit={onSubmitDiscountHandler}
       >
         {items &&
