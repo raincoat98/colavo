@@ -15,8 +15,6 @@ const CartList = () => {
     <CartItem data={item} key={item.id}></CartItem>
   ));
 
-  console.log(discount);
-
   const discountList = discount.map(discount => (
     <CartDiscount data={discount} key={discount.id}></CartDiscount>
   ));

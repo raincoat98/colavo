@@ -53,16 +53,32 @@ const cartSlice = createSlice({
     },
     addDiscount(state, action: PayloadAction<Discount[]>) {
       let discounts = action.payload;
-
-      console.log(discounts);
       if (discounts !== undefined) {
         discounts.forEach(discount => (discount.items = state.items));
         return { ...state, discounts };
       } else return state;
     },
+    updateDiscount(
+      state,
+      action: PayloadAction<{ discount: Discount; item: Item[] }>
+    ) {
+      let { discount, item } = action.payload;
+      if (discount !== undefined) {
+        let updatedDiscount = state.discounts.find(d => d.id === discount.id);
+        if (updatedDiscount) {
+          updatedDiscount.items = item;
+        }
+      }
+      return state;
+    },
   },
 });
 
-export const { addItems, removeItems, updateItemCount, addDiscount } =
-  cartSlice.actions;
+export const {
+  addItems,
+  removeItems,
+  updateItemCount,
+  addDiscount,
+  updateDiscount,
+} = cartSlice.actions;
 export default cartSlice.reducer;

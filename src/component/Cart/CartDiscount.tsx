@@ -10,9 +10,15 @@ import {
 import { CheckIcon } from "@chakra-ui/icons";
 import ItemPopover from "./ItemPopover";
 import { contentBackground, fontColor } from "../../util/colors";
-import { Discount } from "../../store/cartSlice";
+import { Discount, Item, updateDiscount } from "../../store/cartSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../store";
 
 const CartDiscount = ({ data }: any) => {
+  const dispatch = useDispatch();
+  const items: Item[] =
+    useSelector((state: RootState) => state.cart.items) || [];
+
   const bgColor = useColorModeValue(
     contentBackground.light,
     contentBackground.dark
@@ -24,7 +30,6 @@ const CartDiscount = ({ data }: any) => {
     data.items &&
     data.items
       .map((item: any) => {
-        console.log(item);
         return `${item.name}${item.count > 1 ? `x${item.count}` : ""}`;
       })
       .join(", ");
@@ -42,17 +47,19 @@ const CartDiscount = ({ data }: any) => {
     return discount * -1;
   }
 
-  const [selectedDiscounts, setSelectedDiscounts] = useState<Discount[]>([]);
-  const isChecked = (discount: Discount) => {
-    const discountIds = selectedDiscounts.map((i: Discount) => i.id);
-    if (discountIds.includes(discount.id)) {
-      setSelectedDiscounts(
-        selectedDiscounts.filter((i: Discount) => i.id !== discount.id)
-      );
+  const [selectedItems, setSelectedItems] = useState<Item[]>([]);
+  const isChecked = (item: Item) => {
+    const itemIds = selectedItems.map((i: Item) => i.id);
+    if (itemIds.includes(item.id)) {
+      setSelectedItems(selectedItems.filter((i: Item) => i.id !== item.id));
     } else {
-      setSelectedDiscounts([...selectedDiscounts, discount]);
+      setSelectedItems([...selectedItems, item]);
     }
   };
+
+  function onSubmitDiscountHandler(discount: Discount) {
+    dispatch(updateDiscount({ discount, item: selectedItems }));
+  }
 
   return (
     <Flex p={5}>
@@ -64,19 +71,24 @@ const CartDiscount = ({ data }: any) => {
           </Text>
         </HStack>
         <Text fontSize="md" fontWeight="semibold" color="pink.400">
-          {getDiscountedPrice(totalPrice, data.rate)} ({data.rate})
+          {getDiscountedPrice(totalPrice, data.rate)}원 ({data.rate})
         </Text>
       </Flex>
 
       <Spacer />
 
-      <ItemPopover title={data.name} count={data.count}>
-        {data.items &&
-          data.items.map((item: any, index: number) => (
+      <ItemPopover
+        title={data.name}
+        data={data}
+        count={data.count}
+        onSubmit={onSubmitDiscountHandler}
+      >
+        {items &&
+          items.map((item: any, index: number) => (
             <Flex
               key={item.id || index}
-              bg={selectedDiscounts.includes(item) ? "purple.100" : bgColor}
-              color={selectedDiscounts.includes(item) ? "gray.700" : font}
+              bg={selectedItems.includes(item) ? "purple.100" : bgColor}
+              color={selectedItems.includes(item) ? "gray.700" : font}
               onClick={() => isChecked(item)}
               alignItems="center"
               cursor="pointer"
@@ -95,7 +107,7 @@ const CartDiscount = ({ data }: any) => {
                   color="purple.800"
                   boxSize="6"
                   visibility={
-                    selectedDiscounts.includes(item) ? "visible" : "hidden"
+                    selectedItems.includes(item) ? "visible" : "hidden"
                   }
                 />
               </Box>
