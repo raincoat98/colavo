@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 
 import ItemPopover from "./ItemPopover";
-import { Item, removeItems } from "../../store/cartSlice";
+import { Item, removeItems, updateItemCount } from "../../store/cartSlice";
 import { useDispatch } from "react-redux";
 
 const CartItem = ({ data }: any) => {
@@ -22,8 +22,8 @@ const CartItem = ({ data }: any) => {
   function handleCountChange(value: any) {
     setItemCount(value);
   }
-  function onSubmitHandler() {
-    // TODO:  Item의 값을 수정해야함 dispatch
+  function onSubmitHandler(item: Item) {
+    dispatch(updateItemCount({ item, itemCount }));
   }
 
   function removeHandler(item: Item) {
