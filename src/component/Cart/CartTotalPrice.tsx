@@ -1,6 +1,14 @@
 import { Box, Text, Spacer, Flex } from "@chakra-ui/react";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
 
 const CartTotalPrice = () => {
+  const currencyCode: string =
+    useSelector((state: RootState) => state.colavolab.currency_code) || "KRW";
+
+  const totalPrice: number =
+    useSelector((state: RootState) => state.cart.totalPrice) || 0;
+
   return (
     <Flex alignItems="center" p={5}>
       <Box>
@@ -10,7 +18,12 @@ const CartTotalPrice = () => {
       </Box>
       <Spacer />
       <Box>
-        <Text>0원</Text>
+        <Text>
+          {new Intl.NumberFormat("ko", {
+            style: "currency",
+            currency: currencyCode,
+          }).format(totalPrice)}
+        </Text>
       </Box>
     </Flex>
   );

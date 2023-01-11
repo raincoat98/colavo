@@ -18,12 +18,37 @@ export interface Discount {
 export interface CartState {
   items: Item[];
   discounts: Discount[];
+  totalPrice: number;
 }
 
 const initialState: CartState = {
   items: [],
   discounts: [],
+  totalPrice: 0,
 };
+
+function calculateTotalPrice(state: CartState) {
+  let totalPrice = state.items.reduce(
+    (acc, item) => acc + item.price * item.count,
+    0
+  );
+
+  if (state.discounts.length > 0) {
+    let discount = state.discounts.reduce(
+      (acc, d) =>
+        acc +
+        (d.items
+          ? (d.rate *
+              d.items.reduce((acc, item) => acc + item.price * item.count, 0)) /
+            100
+          : 0),
+      0
+    );
+
+    totalPrice -= discount;
+  }
+  return totalPrice;
+}
 
 const cartSlice = createSlice({
   name: "cart",
@@ -33,10 +58,13 @@ const cartSlice = createSlice({
       const newItems = action.payload.filter(newItem => {
         return !state.items.some(item => item.id === newItem.id);
       });
+
       state.items.push(...newItems);
+      state.totalPrice = calculateTotalPrice(state);
     },
     removeItems(state, action: PayloadAction<Item>) {
       state.items = state.items.filter(i => i.id !== action.payload.id);
+      state.totalPrice = calculateTotalPrice(state);
     },
     updateItemCount(
       state,
@@ -44,18 +72,34 @@ const cartSlice = createSlice({
     ) {
       let item = action.payload.item;
       let count = action.payload.itemCount;
-
       let updatedItems = state.items.map(i =>
         i.id === item.id ? { ...i, count } : i
       );
 
-      return { ...state, items: updatedItems };
+      const updatedState = { ...state, items: updatedItems };
+      updatedState.totalPrice = calculateTotalPrice(updatedState);
+      return updatedState;
     },
     addDiscount(state, action: PayloadAction<Discount[]>) {
-      let discounts = action.payload;
-      if (discounts !== undefined) {
-        discounts.forEach(discount => (discount.items = state.items));
-        return { ...state, discounts };
+      let newDiscounts = action.payload;
+      if (newDiscounts !== undefined) {
+        let items = state.items;
+        let discounts = [...state.discounts];
+        newDiscounts.forEach(newDiscount => {
+          if (discounts.some(discount => discount.id === newDiscount.id)) {
+            console.warn(
+              "discount with same id already exists, duplicate will be ignored"
+            );
+            return;
+          }
+          newDiscount.items = items;
+          discounts.push(newDiscount);
+        });
+        return {
+          ...state,
+          discounts,
+          totalPrice: calculateTotalPrice({ ...state, discounts }),
+        };
       } else return state;
     },
     updateDiscount(
@@ -64,15 +108,23 @@ const cartSlice = createSlice({
     ) {
       let { discount, item } = action.payload;
       if (discount !== undefined) {
-        let updatedDiscount = state.discounts.find(d => d.id === discount.id);
-        if (updatedDiscount) {
-          updatedDiscount.items = item;
-        }
-      }
-      return state;
+        let discounts = state.discounts.map(d => {
+          if (d.id === discount.id) {
+            return { ...d, items: item };
+          }
+          return d;
+        });
+        return {
+          ...state,
+          discounts,
+          totalPrice: calculateTotalPrice({ ...state, discounts }),
+        };
+      } else return state;
     },
     removeDiscount(state, action: PayloadAction<Discount>) {
-      state.discounts = state.discounts.filter(d => d.id !== action.payload.id);
+      let discounts = state.discounts.filter(d => d.id !== action.payload.id);
+      let totalPrice = calculateTotalPrice({ ...state, discounts });
+      return { ...state, discounts, totalPrice };
     },
   },
 });

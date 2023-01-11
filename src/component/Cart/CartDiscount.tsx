@@ -39,18 +39,12 @@ const CartDiscount = ({ data }: any) => {
       })
       .join(", ");
 
-  const totalPrice: number = data.items.reduce(
-    (total: number, item: { price: number }) => total + item.price,
-    0
-  );
-
-  function getDiscountedPrice(
-    original: number,
-    discountPercentage: number
-  ): number {
-    const discount = original * (discountPercentage / 10);
-    return discount * -1;
-  }
+  const totalItemPrice =
+    data.items.reduce(
+      (acc: number, item: Item) =>
+        acc + (item.price * item.count * data.rate) / 100,
+      0
+    ) * -1;
 
   const [selectedItems, setSelectedItems] = useState<Item[]>([]);
   const isChecked = (item: Item) => {
@@ -80,7 +74,7 @@ const CartDiscount = ({ data }: any) => {
           </Text>
         </HStack>
         <Text fontSize="md" fontWeight="semibold" color="pink.400">
-          {getDiscountedPrice(totalPrice, data.rate)}원 ({data.rate})
+          {totalItemPrice}원 ({data.rate})
         </Text>
       </Flex>
 
