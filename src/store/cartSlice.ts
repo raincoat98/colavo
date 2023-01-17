@@ -38,9 +38,8 @@ function calculateTotalPrice(state: CartState) {
       (acc, d) =>
         acc +
         (d.items
-          ? (d.rate *
-              d.items.reduce((acc, item) => acc + item.price * item.count, 0)) /
-            100
+          ? d.rate *
+            d.items.reduce((acc, item) => acc + item.price * item.count, 0)
           : 0),
       0
     );

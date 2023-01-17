@@ -114,7 +114,7 @@ function DiscountModal(props: DiscountModalProps) {
                         fontWeight="semibold"
                         color="pink.400"
                       >
-                        {discount.rate}%
+                        {Math.round(discount.rate * 100)}%
                       </Text>
                     </Box>
                     <Spacer />

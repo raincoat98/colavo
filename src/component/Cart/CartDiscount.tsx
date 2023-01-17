@@ -42,7 +42,7 @@ const CartDiscount = ({ data }: any) => {
   const totalItemPrice =
     data.items.reduce(
       (acc: number, item: Item) =>
-        acc + (item.price * item.count * data.rate) / 100,
+        Math.round(acc + item.price * item.count * data.rate),
       0
     ) * -1;
 
@@ -74,7 +74,7 @@ const CartDiscount = ({ data }: any) => {
           </Text>
         </HStack>
         <Text fontSize="md" fontWeight="semibold" color="pink.400">
-          {totalItemPrice}원 ({data.rate})
+          {totalItemPrice}원 ({Math.round(data.rate * 100)}%)
         </Text>
       </Flex>
 
